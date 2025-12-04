@@ -1,4 +1,5 @@
 import numpy as np
+from util import plot_result
 
 class Layer:
     def forward(self, input):
@@ -34,7 +35,7 @@ class Linear(Layer):
 
         self.b = np.zeros(out_features)
 
-        std = np.sqrt(2.0/in_features)*in_features
+        std = np.sqrt(2.0/in_features)
         self.W = np.random.normal(0, std, (out_features, in_features))
         return
     
@@ -130,7 +131,7 @@ class SimpleNetwork:
         return grad_output
     
     
-def train_with_gd(network, X_train, y_train, learning_rate, num_epochs):
+def train_with_gd(network, X_train, y_train, X_val, y_val, learning_rate, num_epochs):
     def cross_entropy_loss(logits, y):
         probs = softmax(logits)
         batch_size = logits.shape[0]
@@ -144,25 +145,52 @@ def train_with_gd(network, X_train, y_train, learning_rate, num_epochs):
 
         return loss, grad_logits
 
+    history = {
+        "train_loss": [],
+        "test_loss": [],
+        "train_acc": [],
+        "test_acc": []
+    }
     losses = []
 
     for epoch in range(num_epochs):
+        # forward pass
         logits = network.forward(X_train)
-
         loss, grad_logits = cross_entropy_loss(logits, y_train)
         losses.append(loss)
 
+        # backward
         network.backward(grad_logits)
 
+        # optimization
         for layer in network.layers:
             if isinstance(layer, Linear):
                 layer.W -= learning_rate * layer.grad_W
                 layer.b -= learning_rate * layer.grad_b
         
-        if (epoch + 1) % 10 == 0:
-            print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {loss: .4f}")
+        # record training loss & accuracy
+        probs = softmax(logits)
+        pred = np.argmax(probs, axis=1)
+        train_acc = np.mean(pred == y_train)
 
-    return losses
+        history["train_loss"].append(loss)
+        history["train_acc"].append(train_acc * 100)
+
+        # record validation loss & accuracy
+        logits_val = network.forward(X_val)
+        probs_val = softmax(logits_val)
+
+        val_loss, _ = cross_entropy_loss(logits_val, y_val)
+        pred_val = np.argmax(probs_val, axis=1)
+        val_acc = np.mean(pred_val == y_val)
+
+        history["test_loss"].append(val_loss)
+        history["test_acc"].append(val_acc * 100)
+
+        if (epoch + 1) % 10 == 0:
+            print(f"Epoch {epoch + 1}/{num_epochs}, Train Loss: {loss: .4f} | Val Loss: {val_loss:.4f}")
+
+    return history, losses
 
 
 if __name__ == "__main__":
@@ -184,9 +212,9 @@ if __name__ == "__main__":
     network = SimpleNetwork(input_size, hidden_size1, hidden_size2, output_size)
     
     # Training parameters
-    learning_rate = 0.1
-    num_epochs = 100
-    losses = train_with_gd(network, X_train, y_train, learning_rate, num_epochs)
+    learning_rate = 0.05
+    num_epochs = 200
+    history, losses = train_with_gd(network, X_train, y_train, X_val, y_val, learning_rate, num_epochs)
 
     print(f"\nFinal Results:")
 
@@ -206,3 +234,15 @@ if __name__ == "__main__":
     accuracy_val = np.mean(predictions_val == y_val)
 
     print(f"\n  Validation Accuracy: {accuracy_val:.2%}")
+
+
+    history, losses = train_with_gd(
+        network,
+        X_train, y_train,
+        X_val, y_val,
+        learning_rate,
+        num_epochs
+    )
+
+    exp_results = {"MLP_3layer": history}
+    plot_result(exp_results, save_name="mlp_experiment")
