@@ -77,7 +77,7 @@ exp_dict = {
 
     "cyclic_short_cycle": {
         "Learning_rate": 0.1,
-        "Scheduler": "CyclicLR",
+        "Scheduler": "CycleLR",
         "Scheduler_param": {
             "cycle_size": 6,    
             "min_lr_factor": 0.2  
@@ -86,7 +86,7 @@ exp_dict = {
 
     "cyclic_medium_cycle": {
         "Learning_rate": 0.1,
-        "Scheduler": "CyclicLR",
+        "Scheduler": "CycleLR",
         "Scheduler_param": {
             "cycle_size": 10,    
             "min_lr_factor": 0.1     
@@ -94,7 +94,7 @@ exp_dict = {
     },
     "cyclic_long_cycle": {
         "Learning_rate": 0.1,
-        "Scheduler": "CyclicLR",
+        "Scheduler": "CycleLR",
         "Scheduler_param": {
             "cycle_size": 20,       
             "min_lr_factor": 0.05   
