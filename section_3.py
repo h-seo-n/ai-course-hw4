@@ -30,21 +30,21 @@ exp_dict = {
 
     "linear_decay_slow": {
         "Learning_rate": 0.1,
-        "Scheduler": "IncreaseDecayLR",
+        "Scheduler": "LinearDecayLR",
         "Scheduler_param": {
             "total_epochs": 50,
         },
     },
     "linear_decay_fast": {
         "Learning_rate": 0.1,
-        "Scheduler": "IncreaseDecayLR",
+        "Scheduler": "LinearDecayLR",
         "Scheduler_param": {
             "total_epochs": 20,
         },
     },
     "linear_decay_very_fast": {
         "Learning_rate": 0.1,
-        "Scheduler": "IncreaseDecayLR",
+        "Scheduler": "LinearDecayLR",
         "Scheduler_param": {
             "total_epochs": 10,
         },
@@ -52,7 +52,7 @@ exp_dict = {
 
     "warmup_short_gamma_0.95": {
         "Learning_rate": 0.1,
-        "Scheduler": "CycleLR",
+        "Scheduler": "IncreaseDecayLR",
         "Scheduler_param": {
             "warmup_epochs": 3,
             "gamma": 0.95,
@@ -60,7 +60,7 @@ exp_dict = {
     },
     "warmup_long_gamma_0.95": {
         "Learning_rate": 0.1,
-        "Scheduler": "CycleLR",
+        "Scheduler": "IncreaseDecayLR",
         "Scheduler_param": {
             "warmup_epochs": 10,
             "gamma": 0.95,
@@ -68,7 +68,7 @@ exp_dict = {
     },
     "warmup_short_gamma_0.9": {
         "Learning_rate": 0.1,
-        "Scheduler": "CycleLR",
+        "Scheduler": "IncreaseDecayLR",
         "Scheduler_param": {
             "warmup_epochs": 3,
             "gamma": 0.9,
